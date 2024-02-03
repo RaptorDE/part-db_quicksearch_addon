@@ -19,24 +19,35 @@ Eine Implementierung über die neue API wäre sicher besser.
 Für den Anfang setzte ich Grundkenntnisse mit HTML voraus.
 In Zukunft werde ich die Anleitung evtl. erweitern.
 
-1. Download search.html [search.html](https://raw.githubusercontent.com/RaptorDE/) 
+Die aktuelle Version wurde mit Part-DB Version: 1.10.6, mit MySQL Datenbank, Reverse Proxy und Docker getestet.
+
+1. Download search.html [search.html](https://raw.githubusercontent.com/RaptorDE/part-db_quicksearch_addon/search.html) 
 
 2. In der HTML-Datei müssen folgende Zeilen angepasst werden:
 
-``
-3. Datei in public media Verzeichnis kopieren
+* Sprache in Zeile Nr. 1 `<html lang="de">` (`en` oder `de`)
+* Part-DB Server URL in Zeile Nr. 85 `var baseURL = '<Part-DB-Server-url>/de/typeahead/parts/search/';`
 
-4. (Optional) Link in banner.md einfügen
+3. Datei in `public_media` oder `public/media` Verzeichnis kopieren
+
+4. Schnellsuche aufrufen `<Part-DB-Server-url>/media/search.html`
+
+5. (Optional) Link in banner.md einfügen
+`[Neue Schnellsuche](/media/search.html)`
 
 ## Bekannte Probleme
 * Bei Verbindung über HTTPS und einem Reverse Proxy muss die vollständige Part-DB-URL angegeben werden.
 * Warum ist es kein Pull Request im Part-DB-Server? Ich weiß nicht, wie man Seiten mit Symfony erstellt. 😁
 
 ## Bilder
+![Screenshot 2024-02-03 204032](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/1245374e-421f-4316-8ba8-bcd54d101929)
+
 
 ## Bugreports
 
 Wenn es zu Fehlern kommt, bitte immer einen Screenshot von der [Web-Konsole](https://firefox-source-docs.mozilla.org/devtools-user/web_console/) mit `XHR` und `Anfragen`.
+![Screenshot 2024-02-03 203905](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/4d530d19-fd9b-4e78-af04-10057791ae1e)
+
 
 ## To-do-Liste
 - [ ] ID in Tabelle anzeigen
