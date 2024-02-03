@@ -14,7 +14,7 @@ Eine Implementierung über die neue API wäre sicher besser.
 - :white_check_mark: Suche beim Schreiben
 - :white_check_mark: freie Suche (Die Reihenfolge der Anfragen ist egal)
 - :white_check_mark: einfache Benutzeroberfläche
-- :white_check_mark: Ausgabe von Bild, Name, Beschreibung, Kategorie und Footprint
+- :white_check_mark: Ausgabe von Bild, Name, Beschreibung, Kategorie, Footprint und ID
 - :white_check_mark: Mehrsprachig (Deutsch und Englisch)
 
 ## Einrichtung
@@ -53,8 +53,7 @@ Wenn es zu Fehlern kommt, bitte immer einen Screenshot von der [Web-Konsole](htt
 
 
 ## To-do-Liste
-- [ ] ID in Tabelle anzeigen
-- [ ] es wird nicht in der Beschreiung gesucht
+- [ ] 
 
 ## Danksagung
 
