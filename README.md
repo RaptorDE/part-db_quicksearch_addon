@@ -38,6 +38,7 @@ Die aktuelle Version wurde mit Part-DB Version: 1.10.6, mit MySQL Datenbank, Rev
 ## Bekannte Probleme
 * Bei Verbindung über HTTPS und einem Reverse Proxy muss die vollständige Part-DB-URL angegeben werden.
 * Warum ist es kein Pull Request im Part-DB-Server? Ich weiß nicht, wie man Seiten mit Symfony erstellt. 😁
+* https://github.com/Part-DB/Part-DB-server/issues/305
 
 ## Bilder
 ![Screenshot 2024-02-03 204032](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/1245374e-421f-4316-8ba8-bcd54d101929)
