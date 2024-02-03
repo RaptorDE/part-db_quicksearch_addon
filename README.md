@@ -21,7 +21,7 @@ In Zukunft werde ich die Anleitung evtl. erweitern.
 
 Die aktuelle Version wurde mit Part-DB Version: 1.10.6, mit MySQL Datenbank, Reverse Proxy und Docker getestet.
 
-1. Download search.html [search.html](https://raw.githubusercontent.com/RaptorDE/part-db_quicksearch_addon/search.html) 
+1. Download search.html [search.html](https://github.com/RaptorDE/part-db_quicksearch_addon/blob/main/search.html) 
 
 2. In der HTML-Datei müssen folgende Zeilen angepasst werden:
 
