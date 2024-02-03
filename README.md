@@ -56,6 +56,7 @@ Wenn es zu Fehlern kommt, bitte immer einen Screenshot von der [Web-Konsole](htt
 ## To-do-Liste
 - [ ] Bild als Link
 - [ ] Fußzeile mit Link zum GitHub und Part-DB
+- [ ] Anzahl der Suchergebnisse
 
 ## Danksagung
 
