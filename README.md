@@ -51,6 +51,7 @@ Wenn es zu Fehlern kommt, bitte immer einen Screenshot von der [Web-Konsole](htt
 
 ## To-do-Liste
 - [ ] ID in Tabelle anzeigen
+- [ ] es wird nicht in der Beschreiung gesucht
 
 ## Danksagung
 
