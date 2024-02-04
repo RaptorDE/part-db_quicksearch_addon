@@ -27,6 +27,10 @@ An implementation via the new API would certainly be better.
 :white_check_mark: Multilingual (German and English)
 
 > [!NOTE]
+> New in version 1.2
+> * added Check for updates when the page is loaded (to disable it, comment out the line `window.onload = checkForUpdates;` at the end of the file)
+
+> [!NOTE]
 > New in version 1.1
 > * added icons and metadata for app shortcuts from Part-DB
 > * added links to images
@@ -34,7 +38,7 @@ An implementation via the new API would certainly be better.
 > * added number of search results at the end of the table
 > * The URL to the Part-DB server no longer needs to be specified
 > * Automatic translation, based on the browser language
-
+> * English README.md
 
 ## Setup
 For the beginning I assume basic knowledge of HTML.
@@ -55,14 +59,15 @@ The current version was tested with Part-DB version: 1.10.6, with MySQL database
 5. (Optional) Insert link in banner.md
 `[New quick search](/media/search.html)`
 
+6. (Optional) Disable Check for updates, comment out the line `window.onload = checkForUpdates;` at the end of the file
+
 ## Known problems
 * ~~When connecting via HTTPS and a reverse proxy, the complete Part-DB URL must be specified.~~
 * Why is there no pull request in the Part DB server? I don't know how to create pages with Symfony. 😁
 * maximum 100 results, API limit
 
 ## Images
-![Screenshot 2024-02-03 204032](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/1245374e-421f-4316-8ba8-bcd54d101929)
-
+![Screenshot 2024-02-04 at 22-15-08 Quick Search(1)](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/9569d8ee-e95a-4c11-a8fb-6efad4ad91d7)
 
 ## Bugreports
 If you are experiencing bugs, please provide a screenshot of the [Web console](https://firefox-source-docs.mozilla.org/devtools-user/web_console/) with 'XHR' and 'Requests'.
