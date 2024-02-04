@@ -15,7 +15,7 @@ An implementation via the new API would certainly be better.
 
 ![preview](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/8fce4785-9ee9-4919-aef6-2d744413ac32)
 
-## Functions
+## Features
 :white_check_mark: search while typing
 
 :white_check_mark: free search (the order of the queries does not matter)
