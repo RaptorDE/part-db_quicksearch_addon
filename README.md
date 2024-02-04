@@ -5,7 +5,7 @@ Das part-db_quicksearch_addon ist eine einfache HTML-Datei, die es erlaubt, schn
 
 Die Programmierung erfolgte mit viel Hilfe von ChatGPT, wobei meine Programmierfähigkeiten und Codequalität auf einem Anfängerniveau sind.
 
-Das addon wird von Part-DB offiziell nicht unterstützt. Es ruft die Ergebnisse der <Part-DB-Server>/de/typeahead/parts/search API und gibt diese als Tabelle aus.
+Das addon wird von Part-DB offiziell nicht unterstützt. Es ruft die Ergebnisse der <Part-DB-Server>/typeahead/parts/search API und gibt diese als Tabelle aus.
 Eine Implementierung über die neue API wäre sicher besser.
 
 ![preview](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/8fce4785-9ee9-4919-aef6-2d744413ac32)
