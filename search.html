@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="version" content="v1.2"> <!-- Setzen Sie die aktuelle Version hier -->
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,11 +109,16 @@
 	<!-- Links am Ende der Seite -->
 	<div id="pageLinksContainer">
 		<a href="/" class="linkStyle" style="float: left; margin: 5px;"><span for="backToPartDB" id="backToPartDBSpan">Back to Part-DB</span></a>
-		<a href="https://github.com/RaptorDE/part-db_quicksearch_addon" class="linkStyle" target="_blank" style="float: right; margin: 5px;">GitHub</a>		
+		<!-- <a href="https://github.com/RaptorDE/part-db_quicksearch_addon/releases/latest" class="linkStyle" target="_blank" style="float: right; margin: 5px;"></a> -->
+		<a id="updatehref" href="https://github.com/RaptorDE/part-db_quicksearch_addon/" class="linkStyle" target="_blank" style="float: right; margin: 5px;"><span id="updateSpan">GitHub</span></a>	
+		
 	</div>
 	
     <script>
-    // Definiere die Basis-URL	
+    
+	
+	
+	// Definiere die Basis-URL	
 	//const aktuellesProtokoll = window.location.protocol; // Aktuelles Protokoll auslesen
 	//const aktuellerPfad = window.location.host; // Aktuellen Pfad auslesen
 	//aktuellesProtokoll + '//' + aktuellerPfad + 
@@ -127,6 +133,7 @@
                 'pageTitle': 'Quick Search',
                 'foundItems': 'Found {count} items',
 				'backToHomepage': 'Back to Part-DB',
+				'updateText': 'Update {latestRelease} available 🎉',
                 'headers': ['Image', 'Name', 'Description', 'Category', 'Footprint', 'ID']
             },
             'de': {
@@ -136,6 +143,7 @@
                 'pageTitle': 'Schnellsuche',
                 'foundItems': '{count} Artikel gefunden',
 				'backToHomepage': 'Zurück zur Part-DB',
+				'updateText': 'Update {latestRelease} verfügbar 🎉',
                 'headers': ['Bild', 'Name', 'Beschreibung', 'Kategorie', 'Footprint', 'ID']
             }
             // Füge hier weitere Sprachen hinzu
@@ -151,7 +159,7 @@
 	
 	// Setze die Sprache basierend auf der Browsersprache
 	var language = navigator.language.split('-')[0] || navigator.userLanguage.split('-')[0];
-	
+	//var language = 'en' //Test in en
 	// Überprüfen, ob der Array translations den Schlüssel language enthält
 	if (!(language in translations)) {
 		console.warn('Translations for the language ' + language + ' not found. Use Standard en.');
@@ -167,6 +175,7 @@
     document.getElementById('searchIcon').textContent = translateText(language, 'searchIcon');
     document.getElementById('searchButton').setAttribute('aria-label', translateText(language, 'searchButtonAlt'));
 	backToPartDBSpan.textContent = translateText(language, 'backToHomepage');
+	
 
     // Übersetze die Tabellenüberschriften
     const tableHeaders = translateText(language, 'headers');
@@ -327,6 +336,45 @@
         // Zeige die Tabelle an
         resultsContainer.style.display = 'block';
     }
+
+	// Funktion, um die neueste Veröffentlichung von GitHub abzurufen
+	async function getLatestRelease(repoOwner, repoName) {
+		const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
+	
+		try {
+			const response = await fetch(apiUrl);
+			const data = await response.json();
+			return data.tag_name;
+		} catch (error) {
+			console.error('Fehler beim Abrufen der neuesten Veröffentlichung:', error);
+			return null;
+		}
+	}
+	
+	// Vergleicht die lokale Version mit der neuesten Veröffentlichung
+	async function checkForUpdates() {
+		const localVersion = document.querySelector('meta[name="version"]').content;
+		const repoOwner = 'RaptorDE';
+		const repoName = 'part-db_quicksearch_addon';
+	
+		const latestRelease = await getLatestRelease(repoOwner, repoName);
+	
+		if (latestRelease && localVersion !== latestRelease) {
+			//alert('Es ist eine neue Version verfügbar!');
+			console.log('Es ist eine neue Version verfügbar! '+ localVersion + ' != ' + latestRelease);
+			updateSpan.textContent = translateText(language, 'updateText').replace('{latestRelease}', latestRelease);
+			updatehref.href = "https://github.com/RaptorDE/part-db_quicksearch_addon/releases";
+		//} else {
+			//console.log('Die Webseite ist auf dem neuesten Stand.' + localVersion + ' = ' + latestRelease);
+			//updateSpan.textContent = "";
+		}
+	}
+	
+
+    // Überprüfe auf Updates, wenn die Seite geladen wird
+	// Check for updates when the page is loaded
+	window.onload = checkForUpdates;
+	
 </script>
 
 </body>
