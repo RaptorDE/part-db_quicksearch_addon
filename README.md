@@ -2,6 +2,7 @@
 Quick search for Part-DB
 
 Deutsche Anleitung: README.de.md
+[![de](https://img.shields.io/badge/lang-de-red.svg)](https://github.dev/RaptorDE/part-db_quicksearch_addon/blob/main/README.de.md)
 
 Workaround for https://github.com/Part-DB/Part-DB-server/issues/305
 
