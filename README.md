@@ -1,9 +1,8 @@
 # part-db_quicksearch_addon
 
-Deutsche Anleitung: [![de](https://img.shields.io/badge/lang-de-green.svg)](https://github.dev/RaptorDE/part-db_quicksearch_addon/blob/main/README.de.md)
+Deutsche Anleitung: [![de](https://img.shields.io/badge/lang-de-green.svg)](https://github.com/RaptorDE/part-db_quicksearch_addon/blob/main/README.de.md)
 
 Quick search for Part-DB
-
 
 Workaround for https://github.com/Part-DB/Part-DB-server/issues/305
 
@@ -18,9 +17,13 @@ An implementation via the new API would certainly be better.
 
 ## Functions
 :white_check_mark: search while typing
+
 :white_check_mark: free search (the order of the queries does not matter)
+
 :white_check_mark: simple user interface
+
 :white_check_mark: output of image, name, description, category, footprint and ID
+
 :white_check_mark: Multilingual (German and English)
 
 ## Setup
