@@ -10,7 +10,7 @@ The part-db_quicksearch_addon is a simple HTML file that allows you to search qu
 
 The programming was done with a lot of help from ChatGPT, although my programming skills and code quality are at a beginner level.
 
-The addon is not officially supported by Part-DB. It retrieves the results of the `<Part-DB-Server>`/en/typeahead/parts/search API and outputs them as a table.
+The addon is not officially supported by Part-DB. It retrieves the results of the `<Part-DB-Server>/en/typeahead/parts/search` API and outputs them as a table.
 An implementation via the new API would certainly be better.
 
 ![preview](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/8fce4785-9ee9-4919-aef6-2d744413ac32)
