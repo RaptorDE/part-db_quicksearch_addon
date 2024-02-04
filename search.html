@@ -1,9 +1,25 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Page</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Quick Search">
+    <meta name="apple-mobile-web-app-title" content="Quick Search">
+    <meta name="msapplication-config" content="/icon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-navbutton-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="turbo-cache-control" content="no-cache">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/icon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/icon/favicon-16x16.png" sizes="16x16">
+    <link rel="mask-icon" href="/icon/safari-pinned-tab.svg" color="#5bbad5">
+	<title>Quick Search</title>
     <style>
         body {
             font-family: 'Arial', sans-serif; /* Beispiel für eine serifenlose Schriftart */
@@ -13,6 +29,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 5em; /* Höhe des Suchfelds */
+			margin-bottom: 2.5em;
         }
 
         th, td {
@@ -65,6 +82,14 @@
         #searchResults {
             margin-top: 2em; /* Höhe des Suchfelds */
         }
+		#pageLinksContainer {
+			position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            width: 100%;
+            background-color: #f8f9fa;
+		}
     </style>
 </head>
 <body>
@@ -79,176 +104,230 @@
 
     <!-- Container for displaying search results -->
     <div id="searchResults"></div>
-
+	
+	<!-- Links am Ende der Seite -->
+	<div id="pageLinksContainer">
+		<a href="/" class="linkStyle" style="float: left; margin: 5px;"><span for="backToPartDB" id="backToPartDBSpan">Back to Part-DB</span></a>
+		<a href="https://github.com/RaptorDE/part-db_quicksearch_addon" class="linkStyle" target="_blank" style="float: right; margin: 5px;">GitHub</a>		
+	</div>
+	
     <script>
-        // Definiere die Basis-URL 
-		var baseURL = '<Patt-DB-Server URL>/de/typeahead/parts/search/';
-		
-		// Funktion für die Textübersetzungen
-        function translateText(language, key) {
-            const translations = {
-                'en': {
-                    'typeToSearch': 'Type to search...',
-                    'searchButtonAlt': 'Search',
-                    'searchIcon': '🔍',
-					'pageTitle': 'Quick Search',
-                    'headers': ['Image', 'Name', 'Description', 'Category', 'Footprint','ID']
-                },
-                'de': {
-                    'typeToSearch': 'Zum Suchen eingeben...',
-                    'searchButtonAlt': 'Suchen',
-                    'searchIcon': '🔍',
-					'pageTitle': 'Schnellsuche',
-                    'headers': ['Bild', 'Name', 'Beschreibung', 'Kategorie', 'Footprint','ID']
-                }
-                // Füge hier weitere Sprachen hinzu
-            };
-
-            return translations[language][key] || key;
-        }
-
-        // Setze die Sprache basierend auf dem 'lang'-Attribut des HTML-Tags
-        const language = document.documentElement.lang || 'en';
-		
-		// Setze den Titel im head
-		document.title = translateText(language, 'pageTitle');
-		
-        // Setze die Übersetzungen für die UI-Elemente
-        document.getElementById('searchInput').setAttribute('placeholder', translateText(language, 'typeToSearch'));
-        document.getElementById('searchIcon').textContent = translateText(language, 'searchIcon');
-        document.getElementById('searchButton').setAttribute('aria-label', translateText(language, 'searchButtonAlt'));
-
-        // Übersetze die Tabellenüberschriften
-        const tableHeaders = translateText(language, 'headers');
-
-        function performSearch() {
-            var query = document.getElementById('searchInput').value.trim();
-
-            if (query !== '') {
-                var searchTerms = query.split(' ');
-                var resultsPromises = [];
-
-                searchTerms.forEach(function(term) {
-                    var encodedTerm = encodeURIComponent(term);
-                    var xhr = new XMLHttpRequest();
-                    var promise = new Promise(function(resolve, reject) {
-                        xhr.onreadystatechange = function() {
-                            if (xhr.readyState === 4) {
-                                if (xhr.status === 200) {
-                                    resolve(JSON.parse(xhr.responseText));
-                                } else {
-                                    reject(xhr.statusText);
-                                }
-                            }
-                        };
-                    });
-
-                    xhr.open('GET', baseURL + encodedTerm, true);
-					//xhr.open('GET', '/typeahead/parts/search/' + encodedTerm, true); //geht nicht wenn HTTPS von reverse Proxy gemacht wird ¯\_(ツ)_/¯
-					xhr.send();
-
-                    resultsPromises.push(promise);
-                });
-				
-				
-				
-                Promise.all(resultsPromises)
-                    .then(function(resultsArray) {
-                        var combinedResults = [].concat.apply([], resultsArray);
-
-                        var filteredResults = combinedResults.filter(function(result) {
-                            return searchTerms.every(function(term) {
-								//an dieser Stelle wird überprüft ob der Suchbegriff auch in der Spalte steht - und ohne das weden doppelte Teile angezeigt
-								return result.name.toLowerCase().includes(term.toLowerCase()) ||
-                                      result.description.toLowerCase().includes(term.toLowerCase()) ||
-									   result.footprint.toLowerCase().includes(term.toLowerCase()) ||
-                                      result.category.toLowerCase().includes(term.toLowerCase());
-                            });
-                        });
-
-                        var uniqueResults = Array.from(new Set(filteredResults.map(result => result.id))).map(id => {
-                            return filteredResults.find(result => result.id === id);
-                        });
-
-                        displayResults(uniqueResults);
-						
-                    })
-                    .catch(function(error) {
-                        console.error('Fehler bei der AJAX-Anfrage:', error);
-                    });
-            } else {
-                document.getElementById('searchResults').innerHTML = '';
+    // Definiere die Basis-URL	
+	//const aktuellesProtokoll = window.location.protocol; // Aktuelles Protokoll auslesen
+	//const aktuellerPfad = window.location.host; // Aktuellen Pfad auslesen
+	//aktuellesProtokoll + '//' + aktuellerPfad + 
+	const baseURL = '/en/typeahead/parts/search/'; // Definiere die Such-URL, /en oder /de wird für die Umleitung auf HTTPS benötigt
+    
+	//Textübersetzungen
+	const translations = {
+            'en': {
+                'typeToSearch': 'Type to search...',
+                'searchButtonAlt': 'Search',
+                'searchIcon': '🔍',
+                'pageTitle': 'Quick Search',
+                'foundItems': 'Found {count} items',
+				'backToHomepage': 'Back to Part-DB',
+                'headers': ['Image', 'Name', 'Description', 'Category', 'Footprint', 'ID']
+            },
+            'de': {
+                'typeToSearch': 'Zum Suchen eingeben...',
+                'searchButtonAlt': 'Suchen',
+                'searchIcon': '🔍',
+                'pageTitle': 'Schnellsuche',
+                'foundItems': '{count} Artikel gefunden',
+				'backToHomepage': 'Zurück zur Part-DB',
+                'headers': ['Bild', 'Name', 'Beschreibung', 'Kategorie', 'Footprint', 'ID']
             }
-        }
+            // Füge hier weitere Sprachen hinzu
+        };
+	
+    // Funktion für die Textübersetzungen
+    function translateText(language, key) {
+        return translations[language][key] || key;
+    }
 
-        document.getElementById('searchInput').addEventListener('input', function() {
-            // Automatische Suche bei Schreiben
-            performSearch();
-        });
+    // Setze die Sprache basierend auf dem 'lang'-Attribut des HTML-Tags
+    //const language = document.documentElement.lang || 'en';
+	
+	// Setze die Sprache basierend auf der Browsersprache
+	var language = navigator.language.split('-')[0] || navigator.userLanguage.split('-')[0];
+	
+	// Überprüfen, ob der Array translations den Schlüssel language enthält
+	if (!(language in translations)) {
+		console.warn('Translations for the language ' + language + ' not found. Use Standard en.');
+		language = 'en'; // Oder eine andere Standard-Sprache deiner Wahl
+	}
+	
 
-        // Hinzugefügter Suchen-Button
-        document.getElementById('searchButton').addEventListener('click', function() {
-            // Manuelle Suche beim Klicken auf den Button
-            performSearch();
-        });
+    // Setze den Titel im head
+    document.title = translateText(language, 'pageTitle');
 
-        function displayResults(results) {
-            var resultsContainer = document.getElementById('searchResults');
-            resultsContainer.innerHTML = '';
+    // Setze die Übersetzungen für die UI-Elemente
+    document.getElementById('searchInput').setAttribute('placeholder', translateText(language, 'typeToSearch'));
+    document.getElementById('searchIcon').textContent = translateText(language, 'searchIcon');
+    document.getElementById('searchButton').setAttribute('aria-label', translateText(language, 'searchButtonAlt'));
+	backToPartDBSpan.textContent = translateText(language, 'backToHomepage');
 
-            var table = document.createElement('table');
-            var thead = table.createTHead();
-            var row = thead.insertRow();
+    // Übersetze die Tabellenüberschriften
+    const tableHeaders = translateText(language, 'headers');
+	
+	// Rufe performSearch einmal beim Laden der Seite auf
+	document.addEventListener('DOMContentLoaded', function () {        
+        performSearch();
+    });
 
-            // Tabellenüberschriften hinzugefügt
-            tableHeaders.forEach(function(headerText) {
-                var th = document.createElement('th');
-                th.textContent = headerText;
-                row.appendChild(th);
+
+    function performSearch() {
+        var query = document.getElementById('searchInput').value.trim();
+
+        if (query !== '') {
+            var searchTerms = query.split(' ');
+            var resultsPromises = [];
+
+            searchTerms.forEach(function (term) {
+                var encodedTerm = encodeURIComponent(term);
+                var xhr = new XMLHttpRequest();
+                var promise = new Promise(function (resolve, reject) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                resolve(JSON.parse(xhr.responseText));
+                            } else {
+                                reject(xhr.statusText);
+                            }
+                        }
+                    };
+                });
+
+                xhr.open('GET', baseURL + encodedTerm, true);
+                xhr.send();
+
+                resultsPromises.push(promise);
             });
 
-            results.forEach(function(result) {
-                row = table.insertRow();
+            Promise.all(resultsPromises)
+                .then(function (resultsArray) {
+                    var combinedResults = [].concat.apply([], resultsArray);
 
-                // Bildzelle hinzugefügt
-                var imageCell = row.insertCell(0);
-                var image = document.createElement('img');
-                image.src = result.image;
-                image.alt = ""; //alternative Text für Bilder
-                image.classList.add('resultImage');
-                imageCell.appendChild(image);
+                    var filteredResults = combinedResults.filter(function (result) {
+                        return searchTerms.every(function (term) {
+                            // an dieser Stelle wird überprüft ob der Suchbegriff auch in der Spalte steht - und ohne das weden doppelte Teile angezeigt
+                            return result.name.toLowerCase().includes(term.toLowerCase()) ||
+                                result.description.toLowerCase().includes(term.toLowerCase()) ||
+                                result.footprint.toLowerCase().includes(term.toLowerCase()) ||
+                                result.category.toLowerCase().includes(term.toLowerCase());
+                        });
+                    });
 
-                // Namenzelle hinzugefügt
-                var nameCell = row.insertCell(1);
-                var nameLink = document.createElement('a');
-                nameLink.href = '/part/' + result.id;
-                nameLink.textContent = result.name;
-                nameLink.classList.add('linkStyle');
-                nameCell.appendChild(nameLink);
+                    var uniqueResults = Array.from(new Set(filteredResults.map(result => result.id))).map(id => {
+                        return filteredResults.find(result => result.id === id);
+                    });
 
-                // Beschreibungszelle hinzugefügt
-                var descriptionCell = row.insertCell(2);
-                descriptionCell.textContent = result.description;
+                    displayResults(uniqueResults);
 
-                // Kategoriezelle hinzugefügt
-                var categoryCell = row.insertCell(3);
-                categoryCell.textContent = result.category;
-
-                // Footprintzelle hinzugefügt
-                var footprintCell = row.insertCell(4);
-                footprintCell.textContent = result.footprint;
-				
-				// ID zelle hinzugefügt
-				var idCell = row.insertCell(5);
-                var idLink = document.createElement('a');
-                idLink.href = '/part/' + result.id;
-                idLink.textContent = result.id;
-                idLink.classList.add('linkStyle');
-                idCell.appendChild(idLink);
-            });
-
-            resultsContainer.appendChild(table);
+                })
+                .catch(function (error) {
+                    console.error('Fehler bei der AJAX-Anfrage:', error);
+                });
+        } else {
+            document.getElementById('searchResults').innerHTML = '';
+            displayResults([]);
         }
-    </script>
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        // Automatische Suche bei Schreiben
+        performSearch();
+    });
+
+    // Hinzugefügter Suchen-Button
+    document.getElementById('searchButton').addEventListener('click', function () {
+        // Manuelle Suche beim Klicken auf den Button
+        performSearch();
+    });
+
+    function displayResults(results) {
+        var resultsContainer = document.getElementById('searchResults');
+        resultsContainer.innerHTML = '';
+
+        var table = document.createElement('table');
+        var thead = table.createTHead();
+        var row = thead.insertRow();
+
+        // Tabellenüberschriften hinzugefügt
+        tableHeaders.forEach(function (headerText) {
+            var th = document.createElement('th');
+            th.textContent = headerText;
+            row.appendChild(th);
+        });
+
+        results.forEach(function (result) {
+            row = table.insertRow();
+
+            // Bildzelle hinzugefügt
+            var imageCell = row.insertCell(0);
+
+            // Erstelle einen Link um das Bild
+            var imageLink = document.createElement('a');
+            imageLink.href = result.image;
+            //imageLink.target = '_blank'; // Öffnet den Link in einem neuen Tab
+
+            // Erstelle das Bild-Element
+            var image = document.createElement('img');
+            image.src = result.image;
+            image.alt = ''; // Alternative Text für Bilder
+            image.classList.add('resultImage');
+
+            imageLink.appendChild(image); // Füge das Bild dem Link hinzu				
+            imageCell.appendChild(imageLink); // Füge den Link zur Bildzelle hinzu
+
+            // Namenzelle hinzugefügt
+            var nameCell = row.insertCell(1);
+            var nameLink = document.createElement('a');
+            nameLink.href = '/part/' + result.id;
+            nameLink.textContent = result.name;
+            nameLink.classList.add('linkStyle');
+            nameCell.appendChild(nameLink);
+
+            // Beschreibungszelle hinzugefügt
+            var descriptionCell = row.insertCell(2);
+            descriptionCell.textContent = result.description;
+
+            // Kategoriezelle hinzugefügt
+            var categoryCell = row.insertCell(3);
+            categoryCell.textContent = result.category;
+
+            // Footprintzelle hinzugefügt
+            var footprintCell = row.insertCell(4);
+            footprintCell.textContent = result.footprint;
+
+            // ID zelle hinzugefügt
+            var idCell = row.insertCell(5);
+            var idLink = document.createElement('a');
+            idLink.href = '/part/' + result.id;
+            idLink.textContent = result.id;
+            idLink.classList.add('linkStyle');
+            idCell.appendChild(idLink);
+        });
+
+        resultsContainer.appendChild(table);
+
+        // Erstelle eine Zeile für die Fußzeile
+        var footerRow = table.insertRow();
+
+        // Erstelle eine Zelle für die Fußzeile
+        var footerCell = footerRow.insertCell();
+        footerCell.colSpan = tableHeaders.length; // Setze die Colspan auf die Anzahl der Spalten
+
+        // Füge den Text mit der Anzahl der gefundenen Elemente hinzu
+        // Übersetze den Text für die Anzahl der gefundenen Elemente
+        var foundItemsText = translateText(language, 'foundItems').replace('{count}', results.length);
+        footerCell.textContent = foundItemsText;
+
+        // Zeige die Tabelle an
+        resultsContainer.style.display = 'block';
+    }
+</script>
+
 </body>
 </html>
