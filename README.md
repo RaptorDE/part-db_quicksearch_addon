@@ -33,9 +33,9 @@ An implementation via the new API would certainly be better.
 > [!NOTE]
 > New in version 1.1
 > * added icons and metadata for app shortcuts from Part-DB
-> * added links to images
+> * added links to Images
 > * added Footer with link to GitHub and Part-DB
-> * added number of search results at the end of the table
+> * added Count of search results at the end of the table
 > * The URL to the Part-DB server no longer needs to be specified
 > * Automatic translation, based on the browser language
 > * English README.md
