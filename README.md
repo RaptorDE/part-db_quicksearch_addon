@@ -33,7 +33,7 @@ The current version was tested with Part-DB version: 1.10.6, with MySQL database
 
 2. the following lines must be adapted in the HTML file:
 * Language in line no. 1 `<html lang="en">` (`en` or `de`)
-* Part-DB server URL in line no. 85 `var baseURL = '<Part-DB-Server-url>/en/typeahead/parts/search/';`
+* Part-DB server URL in line no. 85 `var baseURL = '<Part-DB-Server-url>/typeahead/parts/search/';`
 
 3. copy file to `public_media` or `public/media` directory
 
