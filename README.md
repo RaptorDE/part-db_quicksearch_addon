@@ -65,6 +65,8 @@ The current version was tested with Part-DB version: 1.10.6, with MySQL database
 * ~~When connecting via HTTPS and a reverse proxy, the complete Part-DB URL must be specified.~~
 * Why is there no pull request in the Part DB server? I don't know how to create pages with Symfony. 😁
 * maximum 100 results, API limit
+* searching with `/` and other special characters may not work
+* During testing, I experienced once that the page was very slow. Deleting all cookies and website data solved the problem for me.
 
 ## Images
 ![Screenshot 2024-02-04 at 22-15-08 Quick Search(1)](https://github.com/RaptorDE/part-db_quicksearch_addon/assets/37591931/9569d8ee-e95a-4c11-a8fb-6efad4ad91d7)
